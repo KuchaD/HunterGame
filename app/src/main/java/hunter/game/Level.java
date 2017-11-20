@@ -36,11 +36,8 @@ public class Level {
     }
 
     public void draw(Canvas canvas)  {
-        grass = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.grass);
-        //Bitmap grass = BitmapFactory.decodeResource(gameSurface.getContext().getResources(),R.drawable.grass);
-        canvas.drawBitmap(grass,200,200,null);
-        /*
-        Bitmap newGrass = Bitmap.createScaledBitmap(image, 120, 120, false);
+
+
 
         int width = canvas.getWidth();
         int height = canvas.getHeight();
@@ -50,12 +47,31 @@ public class Level {
 
 
 
-        for(int x =0; x < width-widthImage; x = x+widthImage){
-            for (int y = 0;y < height-heightImage; y+= heightImage){
-                canvas.drawBitmap(grass,x+(widthImage/2), y + (heightImage/2), null);
+        for(int x =0; x < width; x = x+widthImage){
+            for (int y = 0;y < height; y+= heightImage){
+                canvas.drawBitmap(grass,x, y, null);
             }
         }
-*/
+
+        heightImage = tree.getHeight();
+        widthImage = tree.getWidth();
+
+        int nItem = 0;
+        for (int y = 0; y < height; y += heightImage - 20) {
+
+            if(nItem %3 == 0)
+                canvas.drawBitmap(tree2,widthImage-50, y-(heightImage/2), null);
+            if(nItem %2 == 0)
+                canvas.drawBitmap(tree,widthImage/2, y, null);
+
+            canvas.drawBitmap(tree, 0, y, null);
+            nItem++;
+        }
+
+        canvas.drawBitmap(house,house.getWidth(),0, null);
+
+
+
 
     }
 }

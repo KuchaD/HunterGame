@@ -15,7 +15,7 @@ import android.view.MotionEvent;
         import android.view.SurfaceHolder;
         import android.view.SurfaceView;
 
-
+import java.util.ArrayList;
 
 
 public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
@@ -24,6 +24,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private GameThread gameThread;
 
     private ChibiCharacter chibi1;
+    private ArrayList<FireObject> fire = new ArrayList<FireObject>();
     private Bitmap scaled;
     private Level level1;
 
@@ -34,6 +35,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private float newX = 0;
     private float newY = 0;
     public boolean Joystick = false;
+    private int HEIGHT;
+    private int WIDTH;
 
     public GameSurface(Context context)  {
         super(context);
@@ -49,6 +52,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         if(Joystick )
         this.chibi1.update();
+
+        for (FireObject item:fire) {
+            item.update();
+            if(item.getX() > WIDTH || item.getX() < 0 )
+                fire.remove(item);
+            if(item.getY() > HEIGHT || item.getY() < 0)
+                fire.remove(item);
+        }
     }
 
     private void initJoystic(){
@@ -60,6 +71,10 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         newX = centerX;
         newY = centerY;
+
+        HEIGHT = canvas.getHeight();
+        WIDTH = canvas.getWidth();
+
         getHolder().unlockCanvasAndPost(canvas);
     }
 
@@ -72,9 +87,14 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     public void draw(Canvas canvas)  {
         super.draw(canvas);
 
+
+
         this.level1.draw(canvas);
         drawJoystick(canvas);
         this.chibi1.draw(canvas);
+        for (FireObject item:fire) {
+            item.draw(canvas);
+        }
 
 
     }
@@ -82,7 +102,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     private void drawJoystick(Canvas canvas){
 
             Paint colors = new Paint();
-            canvas.drawColor(Color.WHITE);
             canvas.drawCircle(centerX,centerY,baseRadius,new Paint(Color.RED));
             colors.setColor(Color.YELLOW);
             canvas.drawCircle(newX,newY,hatRadius,colors);
@@ -92,7 +111,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
     // Implements method of SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        Bitmap chibiBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.chibi1);
+        Bitmap chibiBitmap1 = BitmapFactory.decodeResource(this.getResources(),R.drawable.character);
         this.chibi1 = new ChibiCharacter(this,chibiBitmap1,100,50);
         initJoystic();
         this.level1 = new Level(this);
@@ -129,8 +148,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() != MotionEvent.ACTION_UP){
         double displacement = Math.sqrt(Math.pow(event.getX() - centerX,2) + Math.pow(event.getY() - centerY,2));
+        if(event.getAction() != MotionEvent.ACTION_UP){
             if(displacement < baseRadius + 50){
                 newPositonJoy(event.getX(),event.getY());
 
@@ -152,6 +171,11 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }else{
             newPositonJoy(centerX,centerY);
             Joystick = false;
+            if(displacement > baseRadius + 50) {
+                float moX = event.getX() - this.chibi1.getX();
+                float moY = event.getY() - this.chibi1.getY();
+                fire.add(new FireObject(this, 1, this.chibi1.getX(), this.chibi1.getY(), moX, moY));
+            }
         }
         return false;
     }
