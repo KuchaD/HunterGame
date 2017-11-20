@@ -1,6 +1,7 @@
 package hunter.game;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +22,8 @@ public class MainActivity extends Activity {
 
 
         this.setContentView(new GameSurface(this));
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
     }
 
 }

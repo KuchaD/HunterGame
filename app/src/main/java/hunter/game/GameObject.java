@@ -32,6 +32,7 @@ public abstract class GameObject {
         this.x= x;
         this.y= y;
 
+
         this.WIDTH = image.getWidth();
         this.HEIGHT = image.getHeight();
 
