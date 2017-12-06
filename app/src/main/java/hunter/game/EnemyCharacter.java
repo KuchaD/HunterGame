@@ -1,73 +1,71 @@
 package hunter.game;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 /**
- * Created by Dave on 16.11.2017.
+ * Created by Dave on 05.12.2017.
  */
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-
-public class ChibiCharacter extends GameObject {
+public class EnemyCharacter extends GameObject {
 
     private static final int ROW_TOP_TO_BOTTOM = 0;
     private static final int ROW_RIGHT_TO_LEFT = 2;
     private static final int ROW_LEFT_TO_RIGHT = 3;
     private static final int ROW_BOTTOM_TO_TOP = 1;
-    private static final int maxLife = 5;
+
     // Row index of Image are being used.
     private int rowUsing = ROW_LEFT_TO_RIGHT;
 
     private int colUsing;
-    private double life = 3.0;
-    private double score = 0.0;
 
     private Bitmap[] leftToRights;
     private Bitmap[] rightToLefts;
     private Bitmap[] topToBottoms;
     private Bitmap[] bottomToTops;
-    private Bitmap[] heart = new Bitmap[2];
-    private Bitmap weapon;
-    private Bitmap coin;
-    private String ammo = "∞";
-    private int typeFire = 1;
-    private int ammoCount = -66;
+
     // Velocity of game character (pixel/millisecond)
-    public static final float VELOCITY = 0.5f;
+    public static final float VELOCITY = 0.2f;
 
     private int movingVectorX = 10;
     private int movingVectorY = 5;
-
+    private int life;
+    private double scoreValue;
     private long lastDrawNanoTime =-1;
 
     private GameSurface gameSurface;
 
-    public ChibiCharacter(GameSurface gameSurface, Bitmap image, int x, int y) {
-        super(image, 7,4, x, y);
+    public EnemyCharacter(GameSurface gameSurface, Bitmap image, int x, int y,int type) {
+        super(image, 4,4, x, y);
 
         this.gameSurface= gameSurface;
 
+        movingVectorX = 1-x;
+        movingVectorY = 0;
 
+        switch (type){
+            case 1:
+                life = 1;
+                scoreValue = 100;
+                break;
+            default:
+                life = 1;
+                scoreValue = 100;
+                break;
 
-        this.topToBottoms = new Bitmap[rowCount-3]; // 3
-        this.rightToLefts = new Bitmap[rowCount-3]; // 3
-        this.leftToRights = new Bitmap[rowCount-3]; // 3
-        this.bottomToTops = new Bitmap[rowCount-3]; // 3
+        }
 
-        for(int col = 0; col< this.rowCount-3; col++ ) {
+        this.topToBottoms = new Bitmap[rowCount]; // 3
+        this.rightToLefts = new Bitmap[rowCount]; // 3
+        this.leftToRights = new Bitmap[rowCount]; // 3
+        this.bottomToTops = new Bitmap[rowCount]; // 3
+
+        for(int col = 0; col< this.rowCount; col++ ) {
             this.topToBottoms[col] = this.createSubImageAt(col,ROW_TOP_TO_BOTTOM);
             this.rightToLefts[col]  = this.createSubImageAt(col,ROW_RIGHT_TO_LEFT);
             this.leftToRights[col] = this.createSubImageAt(col,ROW_LEFT_TO_RIGHT);
             this.bottomToTops[col]  = this.createSubImageAt(col,ROW_BOTTOM_TO_TOP);
         }
-
-        Bitmap heartImage = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.heart);
-        heart[0] = createSubImageAt(heartImage,0,0,1,5);
-        heart[1]= createSubImageAt(heartImage,0,4,1,5);
-        weapon = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.arrow);
-        coin = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.gold);
     }
 
     public Bitmap[] getMoveBitmaps()  {
@@ -93,7 +91,7 @@ public class ChibiCharacter extends GameObject {
 
     public void update()  {
         this.colUsing++;
-        if(colUsing >= this.rowCount-3)  {
+        if(colUsing >= this.rowCount)  {
             this.colUsing =0;
         }
         // Current time in nanoseconds
@@ -116,7 +114,7 @@ public class ChibiCharacter extends GameObject {
         this.y = y +  (int)(distance* movingVectorY / movingVectorLength);
 
         // When the game's character touches the edge of the screen, then change direction
-
+/*
         if(this.x < 0 )  {
             this.x = 0;
             this.movingVectorX = - this.movingVectorX;
@@ -132,7 +130,7 @@ public class ChibiCharacter extends GameObject {
             this.y= this.gameSurface.getHeight()- height;
             this.movingVectorY = - this.movingVectorY ;
         }
-
+*/
         // rowUsing
         if( movingVectorX > 0 )  {
             if(movingVectorY > 0 && Math.abs(movingVectorX) < Math.abs(movingVectorY)) {
@@ -155,25 +153,6 @@ public class ChibiCharacter extends GameObject {
     public void draw(Canvas canvas)  {
         Bitmap bitmap = this.getCurrentMoveBitmap();
         canvas.drawBitmap(bitmap,x, y, null);
-        canvas.drawBitmap(weapon,canvas.getWidth()-290,20, null);
-        canvas.drawBitmap(coin,canvas.getWidth()-400, 15, null);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(40);
-
-        canvas.drawText(ammo,canvas.getWidth()-250,40,paint);
-        paint.setTextSize(40);
-        canvas.drawText(String.valueOf(score),canvas.getWidth()-370,40,paint);
-
-        for (int i = 1;i <= maxLife;i++){
-            if(life < i)
-                canvas.drawBitmap(heart[1],canvas.getWidth()-210+(i*32),0,null);
-            else
-                canvas.drawBitmap(heart[0],canvas.getWidth()-210+(i*32),0,null);
-        }
-
-
         // Last draw time.
         this.lastDrawNanoTime= System.nanoTime();
     }
@@ -183,43 +162,14 @@ public class ChibiCharacter extends GameObject {
         this.movingVectorY = movingVectorY;
     }
 
-    public boolean hit(){
-        life --;
+    public int getLife(){return life;}
+    public boolean hitLife(int demage){
+        life -= demage;
 
-        if(life <= 0)
-            return  false;
+        if(life < 1)
+            return false;
 
         return true;
-
     }
-
-    public void LifePlus(){
-        if(life < 5)
-            life++;
-    }
-
-    public boolean shoot(){
-        if(ammoCount == -66)
-            return true;
-        if(ammoCount == 0)
-            return false;
-        if(ammoCount > 0){
-            ammoCount--;
-            ammo = String.valueOf(ammoCount);
-
-        }
-
-        return false;
-    }
-    public int getTypeFire(){
-        return typeFire;
-    }
-
-    public double getLife(){return life;}
-
-    public double getScore(){return score;};
-    public void addScore(double value){
-        score += value;
-    }
-
+    public double getScoreValue(){return scoreValue;}
 }

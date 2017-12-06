@@ -26,6 +26,7 @@ public class FireObject extends GameObject {
     private long lastDrawNanoTime =-1;
     private GameSurface gameSurface;
     private float angle;
+    private int demage;
     public FireObject(GameSurface gameSurface,int type,int x,int y,float moveX,float moveY) {
         super(BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.arrow), 1, 1, x, y);
         this.gameSurface = gameSurface;
@@ -36,12 +37,13 @@ public class FireObject extends GameObject {
         float moX = moveX-x;
         float moY = moveY-y;
 
-        angle = (float) calculateAngle(x,y,movingVectorX,movingVectorY);
+        angle = (float) calculateAngle(movingVectorX,movingVectorY,x,y);
 
 
         switch (type){
             case 1:
                 Fire = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.arrow);
+                demage = 1;
                 VELOCITY = 0.1f;
             default:
                 Fire = image;
@@ -80,17 +82,19 @@ public class FireObject extends GameObject {
     public Bitmap RotateBitmap(Bitmap source, float angle)
     {
         Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
+        matrix.postRotate(angle,x,y);
         return Bitmap.createBitmap(source, 0,0 , source.getWidth(), source.getHeight(), matrix, true);
     }
 
     public static double calculateAngle(double x1, double y1, double x2, double y2)
     {
-        double angle = Math.toDegrees(Math.atan2(x2 - x1, y2 - y1));
+
+        double angle = Math.toDegrees(Math.atan2(y2 * y1,x2 * x1));
         // Keep angle between 0 and 360
-        angle = angle + Math.ceil( -angle / 360 ) * 360;
+        angle = angle + Math.ceil( angle / 360 ) * 360;
 
         return angle;
     }
 
+    public int getDemage(){return demage ;}
 }

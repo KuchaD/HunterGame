@@ -3,10 +3,12 @@ package hunter.game;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.Image;
+import android.view.View;
 
 /**
  * Created by Dave on 20.11.2017.
@@ -19,10 +21,11 @@ public class Level {
     private Bitmap tree2 ;
     private Bitmap house ;
     private Bitmap root ;
+    private Bitmap bg;
 
     private Bitmap image;
     private GameSurface gameSurface;
-    public Level(GameSurface gameSurface) {
+    public Level(GameSurface gameSurface,Canvas canvas) {
 
 
         this.gameSurface= gameSurface;
@@ -33,10 +36,16 @@ public class Level {
           house = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.house);
           root = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.root);
 
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        mydraw(width,height);
+
     }
 
-    public void draw(Canvas canvas)  {
+    public void mydraw(int w,int h)  {
 
+        bg = Bitmap.createBitmap( (int)w, (int)h, Bitmap.Config.RGB_565 );
+        Canvas canvas = new Canvas(bg);
 
 
         int width = canvas.getWidth();
@@ -73,5 +82,14 @@ public class Level {
 
 
 
+
     }
+
+    public void draw(Canvas canvas){
+
+        canvas.drawBitmap(bg,0,0,null);
+    }
+
+
+
 }

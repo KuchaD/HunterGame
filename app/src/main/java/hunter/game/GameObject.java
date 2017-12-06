@@ -47,6 +47,16 @@ public abstract class GameObject {
         return subImage;
     }
 
+    protected  Bitmap createSubImageAt(Bitmap imageBitmap,int row,int col,int imgRow,int imgCol){
+
+        int heightImage = imageBitmap.getHeight() / imgRow;
+        int widthImage = imageBitmap.getWidth() / imgCol;
+
+
+        Bitmap subImage = Bitmap.createBitmap(imageBitmap, col* widthImage, row* heightImage ,widthImage,heightImage);
+        return subImage;
+    }
+
     public int getX()  {
         return this.x;
     }
