@@ -40,6 +40,9 @@ public class FireObject extends GameObject {
         angle = (float) calculateAngle(movingVectorX,movingVectorY,x,y);
 
 
+        this.gameSurface.playSoundExplosion();
+
+
         switch (type){
             case 1:
                 Fire = BitmapFactory.decodeResource(gameSurface.getResources(),R.drawable.arrow);

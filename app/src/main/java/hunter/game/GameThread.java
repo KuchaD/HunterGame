@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.PaintDrawable;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class GameThread extends Thread {
@@ -71,4 +72,6 @@ public class GameThread extends Thread {
     public void setRunning(boolean running)  {
         this.running= running;
     }
+
+
 }

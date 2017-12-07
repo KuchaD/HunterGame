@@ -25,7 +25,7 @@ public class EnemyCharacter extends GameObject {
     private Bitmap[] bottomToTops;
 
     // Velocity of game character (pixel/millisecond)
-    public static final float VELOCITY = 0.2f;
+    public static float VELOCITY = 0.2f;
 
     private int movingVectorX = 10;
     private int movingVectorY = 5;
@@ -46,6 +46,10 @@ public class EnemyCharacter extends GameObject {
         switch (type){
             case 1:
                 life = 1;
+                scoreValue = 50;
+                break;
+            case 2:
+                life = 3;
                 scoreValue = 100;
                 break;
             default:

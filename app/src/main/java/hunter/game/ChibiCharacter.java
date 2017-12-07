@@ -21,7 +21,7 @@ public class ChibiCharacter extends GameObject {
     private int rowUsing = ROW_LEFT_TO_RIGHT;
 
     private int colUsing;
-    private double life = 3.0;
+    private double life = 5.0;
     private double score = 0.0;
 
     private Bitmap[] leftToRights;
@@ -156,7 +156,7 @@ public class ChibiCharacter extends GameObject {
         Bitmap bitmap = this.getCurrentMoveBitmap();
         canvas.drawBitmap(bitmap,x, y, null);
         canvas.drawBitmap(weapon,canvas.getWidth()-290,20, null);
-        canvas.drawBitmap(coin,canvas.getWidth()-400, 15, null);
+        canvas.drawBitmap(coin,canvas.getWidth()-500, 15, null);
 
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
@@ -164,7 +164,7 @@ public class ChibiCharacter extends GameObject {
 
         canvas.drawText(ammo,canvas.getWidth()-250,40,paint);
         paint.setTextSize(40);
-        canvas.drawText(String.valueOf(score),canvas.getWidth()-370,40,paint);
+        canvas.drawText(String.valueOf(score),canvas.getWidth()-450,40,paint);
 
         for (int i = 1;i <= maxLife;i++){
             if(life < i)
