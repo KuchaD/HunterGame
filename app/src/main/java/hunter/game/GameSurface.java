@@ -129,8 +129,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         this.soundIdArrow = this.soundPool.load(this.getContext(), R.raw.arrow,1);
         this.soundIdGameOver = this.soundPool.load(this.getContext(), R.raw.gameover,1);
         this.soundIdKill = this.soundPool.load(this.getContext(), R.raw.kill,1);
-
-
     }
 
     public void playSoundExplosion()  {
@@ -199,7 +197,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
                 this.chibi1.hit();
             }
 
-
         }
 
         fire.removeAll(removeF);
@@ -219,9 +216,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         }
         explosionList.removeAll(removeExpl);
 
-
-
-
     }
 
     private void initJoystic() {
@@ -239,7 +233,6 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 
         getHolder().unlockCanvasAndPost(canvas);
     }
-
     private void newPositonJoy(float X, float Y) {
         newX = X;
         newY = Y;
